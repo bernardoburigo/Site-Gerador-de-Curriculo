@@ -1,10 +1,10 @@
 package com.engenharia_softeare.gerador_curriculo.llms.infra.controllers;
 
-import com.engenharia_softeare.gerador_curriculo.llms.applications.usecases.EnviarAreaAtuacaoUseCase;
+import com.engenharia_softeare.gerador_curriculo.llms.applications.usecases.GerarCurriculoUseCase;
+import com.engenharia_softeare.gerador_curriculo.llms.applications.usecases.GerarPerguntasUseCase;
 import com.engenharia_softeare.gerador_curriculo.llms.infra.controllers.dto.request.AreaAtuacaoRequestDTO;
-import org.springframework.ai.chat.model.ChatResponse;
+import com.engenharia_softeare.gerador_curriculo.llms.infra.controllers.dto.request.GerarCurriculoRequestDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,17 +14,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/llm")
 public class LlmController {
 
-    private final EnviarAreaAtuacaoUseCase enviarAreaAtuacaoUseCase;
+    private final GerarPerguntasUseCase gerarPerguntasUseCase;
+    private final GerarCurriculoUseCase gerarCurriculoUseCase;
 
-    public LlmController(EnviarAreaAtuacaoUseCase enviarAreaAtuacaoUseCase) {
-        this.enviarAreaAtuacaoUseCase = enviarAreaAtuacaoUseCase;
+    public LlmController(GerarPerguntasUseCase gerarPerguntasUseCase, GerarCurriculoUseCase gerarCurriculoUseCase) {
+        this.gerarPerguntasUseCase = gerarPerguntasUseCase;
+        this.gerarCurriculoUseCase = gerarCurriculoUseCase;
     }
 
-    @PostMapping
-    public ResponseEntity<String> enviarAreaAtuacao(@RequestBody AreaAtuacaoRequestDTO dto) {
-        return ResponseEntity.ok(enviarAreaAtuacaoUseCase.enviar(dto));
+    @PostMapping("/gerar-perguntas")
+    public ResponseEntity<String> enviarPerguntas(@RequestBody AreaAtuacaoRequestDTO dto) {
+        return ResponseEntity.ok(gerarPerguntasUseCase.gerar(dto));
     }
 
-    @GetMapping("/ping")
-    public String ping() { return "ok"; }
+    @PostMapping("/gerar-curriculo")
+    public ResponseEntity<String> gerarCurriculo(@RequestBody GerarCurriculoRequestDTO dto) {
+        return ResponseEntity.ok(gerarCurriculoUseCase.gerar(dto));
+    }
 }
